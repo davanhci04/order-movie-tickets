@@ -2,31 +2,31 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-/* Custom dark theme */
+/* Custom blue theme */
 body {
-    @apply bg-dark-900 text-gray-100;
+    @apply bg-white text-gray-900;
 }
 
 /* Custom button styles */
 .btn-primary {
-    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded transition duration-200;
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition duration-200;
 }
 
 .btn-secondary {
-    @apply bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded transition duration-200;
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded transition duration-200;
 }
 
 .btn-danger {
-    @apply bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded transition duration-200;
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded transition duration-200;
 }
 
 /* Card styles */
 .card {
-    @apply bg-dark-800 border border-gray-700 rounded-lg shadow-lg;
+    @apply bg-white border border-blue-200 rounded-lg shadow-lg;
 }
 
 .card-header {
-    @apply bg-dark-700 px-6 py-4 border-b border-gray-700;
+    @apply bg-blue-50 px-6 py-4 border-b border-blue-200;
 }
 
 .card-body {
@@ -35,17 +35,17 @@ body {
 
 /* Form styles */
 input, textarea, select {
-    @apply bg-dark-800 border-gray-600 text-gray-100 focus:border-red-500 focus:ring-red-500;
+    @apply bg-white border-blue-300 text-blue-900 focus:border-blue-500 focus:ring-blue-500;
 }
 
 /* Navigation hover effects */
 .nav-link-hover {
-    @apply hover:bg-dark-800 hover:text-red-400 transition duration-200;
+    @apply hover:bg-blue-50 hover:text-blue-600 transition duration-200;
 }
 
 /* Movie card styles */
 .movie-card {
-    @apply bg-dark-800 border border-gray-700 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:border-red-500 transition-all duration-300;
+    @apply bg-white border border-blue-200 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:border-blue-400 transition-all duration-300;
 }
 
 .movie-card:hover {
@@ -63,13 +63,13 @@ input, textarea, select {
 }
 
 ::-webkit-scrollbar-track {
-    @apply bg-dark-900;
+    @apply bg-blue-50;
 }
 
 ::-webkit-scrollbar-thumb {
-    @apply bg-gray-600 rounded;
+    @apply bg-blue-300 rounded;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-500;
+    @apply bg-blue-400;
 }
