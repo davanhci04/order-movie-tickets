@@ -1,3 +1,75 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* Custom dark theme */
+body {
+    @apply bg-dark-900 text-gray-100;
+}
+
+/* Custom button styles */
+.btn-primary {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded transition duration-200;
+}
+
+.btn-secondary {
+    @apply bg-gray-700 hover:bg-gray-600 text-white font-medium py-2 px-4 rounded transition duration-200;
+}
+
+.btn-danger {
+    @apply bg-red-700 hover:bg-red-800 text-white font-medium py-2 px-4 rounded transition duration-200;
+}
+
+/* Card styles */
+.card {
+    @apply bg-dark-800 border border-gray-700 rounded-lg shadow-lg;
+}
+
+.card-header {
+    @apply bg-dark-700 px-6 py-4 border-b border-gray-700;
+}
+
+.card-body {
+    @apply p-6;
+}
+
+/* Form styles */
+input, textarea, select {
+    @apply bg-dark-800 border-gray-600 text-gray-100 focus:border-red-500 focus:ring-red-500;
+}
+
+/* Navigation hover effects */
+.nav-link-hover {
+    @apply hover:bg-dark-800 hover:text-red-400 transition duration-200;
+}
+
+/* Movie card styles */
+.movie-card {
+    @apply bg-dark-800 border border-gray-700 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:border-red-500 transition-all duration-300;
+}
+
+.movie-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Rating stars */
+.star-rating {
+    @apply text-yellow-400;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-dark-900;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-600 rounded;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500;
+}

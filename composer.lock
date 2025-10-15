@@ -4,8 +4,53 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bdc6d92507d397adf1c269ed49ec424d",
+    "content-hash": "87caa436218254ca9afa76f6c85bffc2",
     "packages": [
+        {
+            "name": "aiven/aiven-laravel",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/aiven/aiven-laravel.git",
+                "reference": "14a27f069a3dec66420347ba670088dbfd1055e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/aiven/aiven-laravel/zipball/14a27f069a3dec66420347ba670088dbfd1055e4",
+                "reference": "14a27f069a3dec66420347ba670088dbfd1055e4",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LornaJane\\AivenLaravel\\AivenLaravelServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LornaJane\\AivenLaravel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Lorna Jane Mitchell",
+                    "email": "lorna@lornajane.net"
+                }
+            ],
+            "description": "Artisan helpers for working with Aiven databases and Laravel",
+            "support": {
+                "issues": "https://github.com/aiven/aiven-laravel/issues",
+                "source": "https://github.com/aiven/aiven-laravel/tree/v1.0.0"
+            },
+            "abandoned": true,
+            "time": "2021-10-06T20:12:53+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.13.1",
