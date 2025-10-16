@@ -17,10 +17,50 @@
                                         <img src="{{ $movie->poster_url }}" alt="{{ $movie->title }}" 
                                              class="w-48 h-48 object-cover group-hover:scale-105 transition-transform duration-300">
                                         <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300"></div>
+                                        
+                                        @auth
+                                            <!-- Watchlist Button (chỉ hiện khi hover) -->
+                                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <button onclick="toggleWatchlist({{ $movie->id }})" 
+                                                        id="watchlist-btn-{{ $movie->id }}"
+                                                        class="watchlist-btn bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 {{ auth()->user()->hasInWatchlist($movie->id) ? 'bg-red-500 hover:bg-red-600' : '' }}"
+                                                        title="{{ auth()->user()->hasInWatchlist($movie->id) ? 'Xóa khỏi danh sách xem' : 'Thêm vào danh sách xem' }}">
+                                                    @if(auth()->user()->hasInWatchlist($movie->id))
+                                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                                        </svg>
+                                                    @else
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                        </svg>
+                                                    @endif
+                                                </button>
+                                            </div>
+                                        @endauth
                                     </div>
                                 @else
-                                    <div class="w-full h-48 bg-blue-50 flex items-center justify-center border-2 border-dashed border-blue-300">
+                                    <div class="relative w-full h-48 bg-blue-50 flex items-center justify-center border-2 border-dashed border-blue-300">
                                         <span class="text-blue-500 text-sm">🎬 No Poster</span>
+                                        
+                                        @auth
+                                            <!-- Watchlist Button for no poster movies -->
+                                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <button onclick="toggleWatchlist({{ $movie->id }})" 
+                                                        id="watchlist-btn-{{ $movie->id }}"
+                                                        class="watchlist-btn bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-all duration-200 {{ auth()->user()->hasInWatchlist($movie->id) ? 'bg-red-500 hover:bg-red-600' : '' }}"
+                                                        title="{{ auth()->user()->hasInWatchlist($movie->id) ? 'Xóa khỏi danh sách xem' : 'Thêm vào danh sách xem' }}">
+                                                    @if(auth()->user()->hasInWatchlist($movie->id))
+                                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                                        </svg>
+                                                    @else
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                        </svg>
+                                                    @endif
+                                                </button>
+                                            </div>
+                                        @endauth
                                     </div>
                                 @endif
                                 
@@ -77,4 +117,71 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleWatchlist(movieId) {
+            const button = document.getElementById(`watchlist-btn-${movieId}`);
+            const isInWatchlist = button.classList.contains('bg-red-500');
+            
+            // Disable button temporarily
+            button.disabled = true;
+            button.classList.add('opacity-50');
+
+            fetch(`/movies/${movieId}/watchlist`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button appearance
+                    if (data.inWatchlist) {
+                        // Added to watchlist - show filled heart
+                        button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        button.classList.add('bg-red-500', 'hover:bg-red-600');
+                        button.title = 'Xóa khỏi danh sách xem';
+                        button.innerHTML = `
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                            </svg>
+                        `;
+                    } else {
+                        // Removed from watchlist - show plus icon
+                        button.classList.remove('bg-red-500', 'hover:bg-red-600');
+                        button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                        button.title = 'Thêm vào danh sách xem';
+                        button.innerHTML = `
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                        `;
+                    }
+
+                    // Show success message (optional)
+                    const message = document.createElement('div');
+                    message.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+                    message.textContent = data.message;
+                    document.body.appendChild(message);
+                    
+                    setTimeout(() => {
+                        message.remove();
+                    }, 3000);
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Có lỗi xảy ra khi thực hiện thao tác');
+            })
+            .finally(() => {
+                // Re-enable button
+                button.disabled = false;
+                button.classList.remove('opacity-50');
+            });
+        }
+    </script>
 </x-app-layout>

@@ -82,4 +82,30 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
+
+    /**
+     * User's watchlist
+     */
+    public function watchlist()
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    /**
+     * Movies in user's watchlist
+     */
+    public function watchlistMovies()
+    {
+        return $this->belongsToMany(Movie::class, 'watchlists')
+            ->withTimestamps()
+            ->withPivot('created_at', 'updated_at');
+    }
+
+    /**
+     * Check if movie is in user's watchlist
+     */
+    public function hasInWatchlist($movieId): bool
+    {
+        return $this->watchlist()->where('movie_id', $movieId)->exists();
+    }
 }

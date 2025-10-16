@@ -8,7 +8,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Stats Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
                 <!-- Movies Card -->
                 <div class="bg-gradient-to-r from-red-600 to-red-700 p-6 rounded-lg shadow-lg border border-red-500">
                     <div class="flex items-center justify-between">
@@ -29,11 +29,26 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-sm font-medium text-blue-100 opacity-90">Total Users</p>
-                            <p class="text-3xl font-bold black">{{ \App\Models\User::count() }}</p>
+                            <p class="text-3xl font-bold text-black">{{ \App\Models\User::count() }}</p>
                         </div>
                         <div class="p-3 rounded-full bg-white bg-opacity-20">
                             <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Watchlist Items Card -->
+                <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-6 rounded-lg shadow-lg border border-purple-500">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-purple-100 opacity-90">Watchlist Items</p>
+                            <p class="text-3xl font-bold text-black">{{ \App\Models\Watchlist::count() }}</p>
+                        </div>
+                        <div class="p-3 rounded-full bg-white bg-opacity-20">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                             </svg>
                         </div>
                     </div>
@@ -91,12 +106,19 @@
                             <span>Manage Movies</span>
                         </a>
                         
-                        <button class="btn-secondary px-4 py-2 text-sm inline-flex items-center space-x-2" onclick="alert('User management coming soon!')">
+                        <a href="{{ route('admin.users.index') }}" class="btn-secondary px-4 py-2 text-sm inline-flex items-center space-x-2">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
                             </svg>
                             <span>Manage Users</span>
-                        </button>
+                        </a>
+
+                        <a href="{{ route('admin.watchlists.index') }}" class="btn-secondary px-4 py-2 text-sm inline-flex items-center space-x-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            <span>Quản lý Watchlist</span>
+                        </a>
                         
                         <button class="btn-secondary px-4 py-2 text-sm inline-flex items-center space-x-2" onclick="alert('Reports feature coming soon!')">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

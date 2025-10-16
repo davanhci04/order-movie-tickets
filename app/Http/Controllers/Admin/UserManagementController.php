@@ -112,6 +112,23 @@ class UserManagementController extends Controller
      */
     public function show(User $user)
     {
+        $user->load(['ratings', 'comments', 'watchlistMovies']);
         return view('admin.users.show', compact('user'));
+    }
+
+    /**
+     * Show user's watchlist
+     */
+    public function watchlist(User $user)
+    {
+        // Use the correct relationship that returns movies with pivot data
+        $watchlistMovies = $user->watchlistMovies()
+            ->withCount('ratings')
+            ->withAvg('ratings', 'score')
+            ->withPivot('created_at')
+            ->orderBy('watchlists.created_at', 'desc')
+            ->paginate(12);
+
+        return view('admin.users.watchlist', compact('user', 'watchlistMovies'));
     }
 }

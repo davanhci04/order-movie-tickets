@@ -46,4 +46,20 @@ class Movie extends Model
     {
         return $this->ratings()->where('user_id', $userId)->first();
     }
+
+    /**
+     * Watchlist entries for this movie
+     */
+    public function watchlists()
+    {
+        return $this->hasMany(Watchlist::class);
+    }
+
+    /**
+     * Users who added this movie to watchlist
+     */
+    public function watchlistUsers()
+    {
+        return $this->belongsToMany(User::class, 'watchlists');
+    }
 }
