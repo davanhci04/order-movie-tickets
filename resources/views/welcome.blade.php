@@ -9,7 +9,6 @@
                         @foreach($featuredMovies as $index => $movie)
                             <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
                                 <div class="relative flex flex-col lg:flex-row items-center min-h-[500px] lg:min-h-[600px]">
-                                    
                                     <!-- Full-width Poster Background -->
                                     <div class="absolute inset-0 z-0">
                                         @if($movie->poster_url)
@@ -55,7 +54,7 @@
                                                     @if(auth()->user()->hasInWatchlist($movie->id))
                                                         <button onclick="toggleWatchlist({{ $movie->id }})" 
                                                                 id="hero-watchlist-btn-{{ $movie->id }}"
-                                                                class="bg-transparent border-2 border-white/30 text-green-500 p-3 rounded-lg transition-all duration-300 hover:border-white/50 hover:text-white/90 hover:bg-white/10">
+                                                                class="bg-green-500 hover:bg-green-600 text-white border-2 border-green-400 p-3 rounded-lg transition-all duration-300 shadow-lg">
                                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                                             </svg>
@@ -64,7 +63,7 @@
                                                     @else
                                                         <button onclick="toggleWatchlist({{ $movie->id }})" 
                                                                 id="hero-watchlist-btn-{{ $movie->id }}"
-                                                                class="bg-white/20 hover:bg-white/30 text-white border-2 border-white/50 hover:border-white/70 p-3 rounded-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm">
+                                                                class="bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-500 p-3 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg">
                                                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                                             </svg>
@@ -124,53 +123,114 @@
                 <section class="mb-16">
                     <div class="flex items-center justify-between mb-8">
                         <h2 class="text-3xl font-bold text-gray-900">Phim Được Đánh Giá Cao</h2>
-                        <a href="{{ route('movies.index') }}" class="text-blue-600 hover:text-blue-700 font-semibold flex items-center">
-                            Xem tất cả
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </a>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <button onclick="topRatedPrev()" id="top-rated-prev" 
+                                        class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="topRatedNext()" id="top-rated-next" 
+                                        class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <a href="{{ route('movies.index') }}" class="text-blue-600 hover:text-blue-700 font-semibold flex items-center">
+                                Xem tất cả
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
-                    
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6">
-                        @foreach($topRatedMovies as $movie)
-                            <div class="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-                                <a href="{{ route('movies.show', $movie) }}" class="block">
-                                    <!-- Movie Poster -->
-                                    <div class="aspect-[2/3] relative overflow-hidden">
-                                        @if($movie->poster_url)
-                                            <img src="{{ $movie->poster_url }}" 
-                                                 alt="{{ $movie->title }}" 
-                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                        @else
-                                            <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
-                                                <svg class="w-12 h-12 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v16a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1h1z"></path>
+
+                    <div class="pt-4 relative overflow-hidden">
+                        <div id="top-rated-carousel" class="flex transition-transform duration-300 ease-in-out">
+                            @foreach($topRatedMovies->take(8) as $movie)
+                                <div class="flex-none w-1/5 px-3">
+                                    <div class="group relative bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 overflow-hidden h-80">
+                                        <a href="{{ route('movies.show', $movie) }}" class="block h-full relative">
+                                            <!-- Movie Poster -->
+                                            @if($movie->poster_url)
+                                                <img src="{{ $movie->poster_url }}" 
+                                                     alt="{{ $movie->title }}" 
+                                                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                                            @else
+                                                <div class="w-full h-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+                                                    <svg class="w-16 h-16 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v16a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1h1z"></path>
+                                                    </svg>
+                                                </div>
+                                            @endif
+
+                                            <!-- Dark Overlay for Movie Info -->
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                            
+                                            <!-- Movie Info Overlay -->
+                                            <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                                <h3 class="font-bold text-lg mb-2 line-clamp-2">
+                                                    {{ $movie->title }}
+                                                </h3>
+                                                
+                                                <div class="flex items-center justify-between text-sm mb-2">
+                                                    <span>{{ $movie->release_year }}</span>
+                                                    @if($movie->duration)
+                                                        <span>{{ $movie->duration }} phút</span>
+                                                    @endif
+                                                </div>
+
+                                                @if($movie->genre)
+                                                    <div class="mb-2">
+                                                        <span class="inline-block bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+                                                            {{ $movie->genre }}
+                                                        </span>
+                                                    </div>
+                                                @endif
+
+                                                @if($movie->director)
+                                                    <p class="text-white/90 text-xs">
+                                                        <span class="font-medium">Đạo diễn:</span> {{ $movie->director }}
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </a>
+
+                                        @auth
+                                            <!-- Watchlist Button -->
+                                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                                <button onclick="toggleWatchlist({{ $movie->id }})" 
+                                                        id="top-rated-watchlist-btn-{{ $movie->id }}"
+                                                        class="watchlist-btn p-2 rounded-full shadow-lg transition-all duration-200 {{ auth()->user()->hasInWatchlist($movie->id) ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700' }} text-white"
+                                                        title="{{ auth()->user()->hasInWatchlist($movie->id) ? 'Xóa khỏi danh sách xem' : 'Thêm vào danh sách xem' }}">
+                                                    @if(auth()->user()->hasInWatchlist($movie->id))
+                                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                                        </svg>
+                                                    @else
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                        </svg>
+                                                    @endif
+                                                </button>
+                                            </div>
+                                        @endauth
+
+                                        <!-- Rating Badge -->
+                                        @if($movie->average_rating > 0)
+                                            <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center space-x-1 z-10">
+                                                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                                                 </svg>
+                                                <span>{{ number_format($movie->average_rating, 1) }}</span>
                                             </div>
                                         @endif
-                                        
-                                        <!-- Rating Badge -->
-                                        <div class="absolute top-2 left-2 bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                            </svg>
-                                            <span>{{ number_format($movie->average_rating, 1) }}</span>
-                                        </div>
                                     </div>
-                                    
-                                    <!-- Movie Info -->
-                                    <div class="p-4">
-                                        <h3 class="font-semibold text-gray-900 text-sm mb-1 line-clamp-2">
-                                            {{ $movie->title }}
-                                        </h3>
-                                        <div class="flex items-center text-xs text-gray-600">
-                                            <span>{{ $movie->release_year }}</span>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        @endforeach
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </section>
             @endif
@@ -180,98 +240,216 @@
                 <section class="mb-16">
                     <div class="flex items-center justify-between mb-8">
                         <h2 class="text-3xl font-bold text-gray-900">Phim Mới Phát Hành</h2>
-                        <a href="{{ route('movies.index') }}" class="text-blue-600 hover:text-blue-700 font-semibold flex items-center">
-                            Xem tất cả
-                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                            </svg>
-                        </a>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6">
-                        @foreach($recentMovies as $movie)
-                            <div class="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-                                <a href="{{ route('movies.show', $movie) }}" class="block">
-                                    <!-- Movie Poster -->
-                                    <div class="aspect-[2/3] relative overflow-hidden">
-                                        @if($movie->poster_url)
-                                            <img src="{{ $movie->poster_url }}" 
-                                                 alt="{{ $movie->title }}" 
-                                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                        @else
-                                            <div class="w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
-                                                <svg class="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v16a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1h1z"></path>
-                                                </svg>
-                                            </div>
-                                        @endif
-                                        
-                                        <!-- New Badge -->
-                                        <div class="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                                            Mới
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Movie Info -->
-                                    <div class="p-4">
-                                        <h3 class="font-semibold text-gray-900 text-sm mb-1 line-clamp-2">
-                                            {{ $movie->title }}
-                                        </h3>
-                                        <div class="flex items-center text-xs text-gray-600">
-                                            <span>{{ $movie->release_year }}</span>
-                                        </div>
-                                    </div>
-                                </a>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <button onclick="recentPrev()" id="recent-prev" 
+                                        class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="recentNext()" id="recent-next" 
+                                        class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
                             </div>
-                        @endforeach
+                            <a href="{{ route('movies.index') }}" class="text-blue-600 hover:text-blue-700 font-semibold flex items-center">
+                                Xem tất cả
+                                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
                     </div>
-                </section>
-            @endif
 
-            <!-- Recommendations Section -->
-            <section class="mb-16">
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-3xl font-bold text-gray-900">Gợi Ý Theo Sở Thích</h2>
-                </div>
-                
-                @auth
-                    @if($recommendedMovies->count() > 0)
-                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6">
-                            @foreach($recommendedMovies as $movie)
-                                <div class="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 overflow-hidden">
-                                    <a href="{{ route('movies.show', $movie) }}" class="block">
-                                        <!-- Movie Poster -->
-                                        <div class="aspect-[2/3] relative overflow-hidden">
+                    <div class="pt-4 relative overflow-hidden">
+                        <div id="recent-carousel" class="flex transition-transform duration-300 ease-in-out">
+                            @foreach($recentMovies->take(8) as $movie)
+                                <div class="flex-none w-1/5 px-3">
+                                    <div class="group relative bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 overflow-hidden h-80">
+                                        <a href="{{ route('movies.show', $movie) }}" class="block h-full relative">
+                                            <!-- Movie Poster -->
                                             @if($movie->poster_url)
                                                 <img src="{{ $movie->poster_url }}" 
                                                      alt="{{ $movie->title }}" 
-                                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                                     class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                                             @else
-                                                <div class="w-full h-full bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
-                                                    <svg class="w-12 h-12 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <div class="w-full h-full bg-gradient-to-br from-green-100 to-green-200 flex items-center justify-center">
+                                                    <svg class="w-16 h-16 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v16a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1h1z"></path>
                                                     </svg>
                                                 </div>
                                             @endif
+
+                                            <!-- Dark Overlay for Movie Info -->
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                             
+                                            <!-- Movie Info Overlay -->
+                                            <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                                <h3 class="font-bold text-lg mb-2 line-clamp-2">
+                                                    {{ $movie->title }}
+                                                </h3>
+                                                
+                                                <div class="flex items-center justify-between text-sm mb-2">
+                                                    <span>{{ $movie->release_year }}</span>
+                                                    @if($movie->duration)
+                                                        <span>{{ $movie->duration }} phút</span>
+                                                    @endif
+                                                </div>
+
+                                                @if($movie->genre)
+                                                    <div class="mb-2">
+                                                        <span class="inline-block bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+                                                            {{ $movie->genre }}
+                                                        </span>
+                                                    </div>
+                                                @endif
+
+                                                @if($movie->director)
+                                                    <p class="text-white/90 text-xs">
+                                                        <span class="font-medium">Đạo diễn:</span> {{ $movie->director }}
+                                                    </p>
+                                                @endif
+                                            </div>
+                                        </a>
+
+                                        @auth
+                                            <!-- Watchlist Button -->
+                                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                                <button onclick="toggleWatchlist({{ $movie->id }})" 
+                                                        id="recent-watchlist-btn-{{ $movie->id }}"
+                                                        class="watchlist-btn p-2 rounded-full shadow-lg transition-all duration-200 {{ auth()->user()->hasInWatchlist($movie->id) ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700' }} text-white"
+                                                        title="{{ auth()->user()->hasInWatchlist($movie->id) ? 'Xóa khỏi danh sách xem' : 'Thêm vào danh sách xem' }}">
+                                                    @if(auth()->user()->hasInWatchlist($movie->id))
+                                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                                        </svg>
+                                                    @else
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                        </svg>
+                                                    @endif
+                                                </button>
+                                            </div>
+                                        @endauth
+
+                                        <!-- New Badge -->
+                                        <div class="absolute top-2 left-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold z-10">
+                                            Mới
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+            @endif
+                
+            <!-- Recommendations Section -->
+            <section class="mb-16">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-3xl font-bold text-gray-900">Gợi Ý Theo Sở Thích</h2>
+                    @auth
+                        @if($recommendedMovies->count() > 0)
+                            <div class="flex items-center space-x-2">
+                                <button onclick="recommendedPrev()" id="recommended-prev" 
+                                        class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                                    </svg>
+                                </button>
+                                <button onclick="recommendedNext()" id="recommended-next" 
+                                        class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 text-gray-600 hover:text-gray-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        @endif
+                    @endauth
+                </div>
+                
+                @auth
+                    @if($recommendedMovies->count() > 0)
+                        <div class="pt-4 relative overflow-hidden">
+                            <div id="recommended-carousel" class="flex transition-transform duration-300 ease-in-out">
+                                @foreach($recommendedMovies->take(8) as $movie)
+                                    <div class="flex-none w-1/5 px-3">
+                                        <div class="group relative bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-200 overflow-hidden h-80">
+                                            <a href="{{ route('movies.show', $movie) }}" class="block h-full relative">
+                                                <!-- Movie Poster -->
+                                                @if($movie->poster_url)
+                                                    <img src="{{ $movie->poster_url }}" 
+                                                         alt="{{ $movie->title }}" 
+                                                         class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
+                                                @else
+                                                    <div class="w-full h-full bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center">
+                                                        <svg class="w-16 h-16 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v16a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1h1z"></path>
+                                                        </svg>
+                                                    </div>
+                                                @endif
+
+                                                <!-- Dark Overlay for Movie Info -->
+                                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                                
+                                                <!-- Movie Info Overlay -->
+                                                <div class="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                                                    <h3 class="font-bold text-lg mb-2 line-clamp-2">
+                                                        {{ $movie->title }}
+                                                    </h3>
+                                                    
+                                                    <div class="flex items-center justify-between text-sm mb-2">
+                                                        <span>{{ $movie->release_year }}</span>
+                                                        @if($movie->duration)
+                                                            <span>{{ $movie->duration }} phút</span>
+                                                        @endif
+                                                    </div>
+
+                                                    @if($movie->genre)
+                                                        <div class="mb-2">
+                                                            <span class="inline-block bg-white/20 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-medium">
+                                                                {{ $movie->genre }}
+                                                            </span>
+                                                        </div>
+                                                    @endif
+
+                                                    @if($movie->director)
+                                                        <p class="text-white/90 text-xs">
+                                                            <span class="font-medium">Đạo diễn:</span> {{ $movie->director }}
+                                                        </p>
+                                                    @endif
+                                                </div>
+                                            </a>
+
+                                            <!-- Watchlist Button -->
+                                            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                                                <button onclick="toggleWatchlist({{ $movie->id }})" 
+                                                        id="recommended-watchlist-btn-{{ $movie->id }}"
+                                                        class="watchlist-btn p-2 rounded-full shadow-lg transition-all duration-200 {{ auth()->user()->hasInWatchlist($movie->id) ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700' }} text-white"
+                                                        title="{{ auth()->user()->hasInWatchlist($movie->id) ? 'Xóa khỏi danh sách xem' : 'Thêm vào danh sách xem' }}">
+                                                    @if(auth()->user()->hasInWatchlist($movie->id))
+                                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                                        </svg>
+                                                    @else
+                                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                        </svg>
+                                                    @endif
+                                                </button>
+                                            </div>
+
                                             <!-- Recommendation Badge -->
-                                            <div class="absolute top-2 left-2 bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+                                            <div class="absolute top-2 left-2 bg-purple-500 text-white px-2 py-1 rounded-full text-xs font-semibold z-10">
                                                 Gợi ý
                                             </div>
                                         </div>
-                                        
-                                        <!-- Movie Info -->
-                                        <div class="p-4">
-                                            <h3 class="font-semibold text-gray-900 text-sm mb-1 line-clamp-2">
-                                                {{ $movie->title }}
-                                            </h3>
-                                            <div class="flex items-center text-xs text-gray-600">
-                                                <span>{{ $movie->release_year }}</span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            @endforeach
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
                     @else
                         <div class="bg-white rounded-xl shadow-md p-8 text-center">
@@ -348,97 +526,8 @@
         </div>
     </div>
 
-    <!-- Carousel JavaScript -->
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.carousel-slide');
-        const indicators = document.querySelectorAll('.carousel-indicator');
-        const totalSlides = slides.length;
-
-        function showSlide(n) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            indicators.forEach(indicator => {
-                indicator.classList.remove('bg-white');
-                indicator.classList.add('bg-white/50');
-            });
-
-            currentSlide = (n + totalSlides) % totalSlides;
-            slides[currentSlide].classList.add('active');
-            indicators[currentSlide].classList.remove('bg-white/50');
-            indicators[currentSlide].classList.add('bg-white');
-        }
-
-        function nextSlide() {
-            showSlide(currentSlide + 1);
-        }
-
-        function previousSlide() {
-            showSlide(currentSlide - 1);
-        }
-
-        function goToSlide(n) {
-            showSlide(n);
-        }
-
-        // Auto-play carousel
-        setInterval(nextSlide, 5000);
-
-        // Watchlist functionality
-        function toggleWatchlist(movieId) {
-            const button = document.getElementById(`hero-watchlist-btn-${movieId}`);
-            if (!button) return;
-            
-            // Disable button temporarily
-            button.disabled = true;
-            button.classList.add('opacity-50');
-
-            fetch(`/movies/${movieId}/watchlist`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update button appearance based on status
-                    const svg = button.querySelector('svg');
-                    
-                    if (data.inWatchlist) {
-                        // Style for "In watchlist" - checkmark icon, transparent background
-                        button.className = 'bg-transparent border-2 border-white/30 text-white/70 p-3 rounded-lg transition-all duration-300 hover:border-white/50 hover:text-white/90 hover:bg-white/10';
-                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
-                    } else {
-                        // Style for "Add to watchlist" - plus icon, semi-transparent background
-                        button.className = 'bg-white/20 hover:bg-white/30 text-white border-2 border-white/50 hover:border-white/70 p-3 rounded-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm';
-                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>';
-                    }
-
-                    // Show success message with enhanced styling
-                    const message = document.createElement('div');
-                    message.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-                    message.textContent = data.message;
-                    document.body.appendChild(message);
-                    
-                    setTimeout(() => {
-                        message.remove();
-                    }, 3000);
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi thực hiện thao tác');
-            })
-            .finally(() => {
-                // Re-enable button
-                button.disabled = false;
-                button.classList.remove('opacity-50');
-            });
-        }
-    </script>
+    <!-- JavaScript functionality is now handled by external modules -->
+    @vite(['resources/js/app.js'])
 
     <!-- Custom CSS for carousel -->
     <style>

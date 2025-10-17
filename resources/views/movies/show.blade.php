@@ -111,7 +111,7 @@
                                                 <form action="{{ route('movies.rate.destroy', $movie) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-400 hover:text-red-300 ml-2 transition duration-200" onclick="return confirm('Are you sure?')">
+                                                    <button type="submit" class="text-red-400 hover:text-red-300 ml-2 transition duration-200" onclick="return confirmDelete('Are you sure?')">
                                                         Remove Rating
                                                     </button>
                                                 </form>
@@ -182,7 +182,7 @@
                                             <form action="{{ route('comments.destroy', $comment) }}" method="POST" class="inline">
                                                 @csrf
                                                 @method('DELETE')
-                                                <button type="submit" class="text-red-400 hover:text-red-300 text-sm transition duration-200" onclick="return confirm('Are you sure?')">
+                                                <button type="submit" class="text-red-400 hover:text-red-300 text-sm transition duration-200" onclick="return confirmDelete('Are you sure?')">
                                                     Delete
                                                 </button>
                                             </form>
@@ -277,12 +277,7 @@
             .catch(error => {
                 console.error('Error:', error);
                 alert('Có lỗi xảy ra khi thực hiện thao tác');
-            })
-            .finally(() => {
-                // Re-enable button
-                button.disabled = false;
-                button.classList.remove('opacity-50');
-            });
-        }
-    </script>
+    </div>
+
+    @vite(['resources/js/app.js', 'resources/js/movies-show.js'])
 </x-app-layout>

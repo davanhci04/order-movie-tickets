@@ -110,32 +110,6 @@
         </div>
     </div>
 
-    <script>
-        function removeFromWatchlist(movieId) {
-            if (!confirm('Bạn có chắc muốn xóa phim này khỏi danh sách xem?')) {
-                return;
-            }
-
-            fetch(`/movies/${movieId}/watchlist`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Reload page to update the list
-                    location.reload();
-                } else {
-                    alert(data.message || 'Có lỗi xảy ra');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Có lỗi xảy ra khi xóa phim');
-            });
-        }
-    </script>
+    @vite(['resources/js/app.js', 'resources/js/movies-watchlist.js'])
+</x-app-layout>
 </x-app-layout>
