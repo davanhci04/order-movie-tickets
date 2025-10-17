@@ -5,7 +5,7 @@
             <div class="flex items-center space-x-8">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('movies.index') }}">
+                    <a href="{{ route('home') }}">
                         @if(file_exists(public_path('images/logo.png')))
                             <img src="{{ asset('images/logo.png') }}" alt="MoviePortal Logo" class="w-20 h-20">
                         @else
@@ -36,14 +36,19 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden lg:flex items-center space-x-6">
+                    <a href="{{ route('home') }}" 
+                       class="px-4 py-2 text-lg font-bold tracking-tight rounded-lg transition-all duration-200 {{ request()->routeIs('home') ? 'text-blue-600 bg-blue-100' : 'text-blue-800 hover:text-blue-600 hover:bg-blue-50' }}">
+                        {{ __('Trang chủ') }}
+                    </a>
+                    
                     <a href="{{ route('movies.index') }}" 
                        class="px-4 py-2 text-lg font-bold tracking-tight rounded-lg transition-all duration-200 {{ request()->routeIs('movies.*') ? 'text-blue-600 bg-blue-100' : 'text-blue-800 hover:text-blue-600 hover:bg-blue-50' }}">
-                        {{ __('Phim') }}
+                        {{ __('Danh sách phim') }}
                     </a>
                     
                     @auth
-                        <a href="{{ route('movies.watchlist') }}"
-                           class="px-4 py-2 text-lg font-bold tracking-tight rounded-lg transition-all duration-200 {{ request()->routeIs('movies.watchlist') ? 'text-blue-600 bg-blue-100' : 'text-blue-800 hover:text-blue-600 hover:bg-blue-50' }}">
+                        <a href="{{ route('watchlist.index') }}"
+                           class="px-4 py-2 text-lg font-bold tracking-tight rounded-lg transition-all duration-200 {{ request()->routeIs('watchlist.*') ? 'text-blue-600 bg-blue-100' : 'text-blue-800 hover:text-blue-600 hover:bg-blue-50' }}">
                             {{ __('Watchlist') }}
                         </a>
                         
@@ -152,17 +157,25 @@
         </div>
 
         <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')" 
+                                   class="flex items-center space-x-3 px-4 py-3 text-base font-medium rounded-lg mx-3 transition-all duration-200 {{ request()->routeIs('home') ? 'text-blue-600 bg-blue-100' : 'text-blue-700 hover:text-blue-600 hover:bg-blue-100' }}">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                </svg>
+                {{ __('Trang chủ') }}
+            </x-responsive-nav-link>
+            
             <x-responsive-nav-link :href="route('movies.index')" :active="request()->routeIs('movies.*')" 
                                    class="flex items-center space-x-3 px-4 py-3 text-base font-medium rounded-lg mx-3 transition-all duration-200 {{ request()->routeIs('movies.*') ? 'text-blue-600 bg-blue-100' : 'text-blue-700 hover:text-blue-600 hover:bg-blue-100' }}">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h3a1 1 0 110 2h-1v13a2 2 0 01-2 2H6a2 2 0 01-2-2V6H3a1 1 0 110-2h4z"></path>
                 </svg>
-                {{ __('Phim') }}
+                {{ __('Danh sách phim') }}
             </x-responsive-nav-link>
             
             @auth
-                <x-responsive-nav-link :href="route('movies.watchlist')" :active="request()->routeIs('movies.watchlist')"
-                                       class="flex items-center space-x-3 px-4 py-3 text-base font-medium rounded-lg mx-3 transition-all duration-200 {{ request()->routeIs('movies.watchlist') ? 'text-blue-600 bg-blue-100' : 'text-blue-700 hover:text-blue-600 hover:bg-blue-100' }}">
+                <x-responsive-nav-link :href="route('watchlist.index')" :active="request()->routeIs('watchlist.*')"
+                                       class="flex items-center space-x-3 px-4 py-3 text-base font-medium rounded-lg mx-3 transition-all duration-200 {{ request()->routeIs('watchlist.*') ? 'text-blue-600 bg-blue-100' : 'text-blue-700 hover:text-blue-600 hover:bg-blue-100' }}">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                     </svg>

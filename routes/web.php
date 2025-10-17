@@ -4,24 +4,23 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UserManagementController;
 use App\Http\Controllers\Admin\AdminMovieController;
 use App\Http\Controllers\MovieController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\WatchlistController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
-// Redirect root to movies
-Route::get('/', function () {
-    return redirect()->route('movies.index');
-});
+// Landing page route
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Public movie routes
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 Route::get('/movies/{movie}', [MovieController::class, 'show'])->name('movies.show');
 
-// Dashboard redirect to movies for authenticated users
+// Dashboard redirect to home for authenticated users
 Route::get('/dashboard', function () {
-    return redirect()->route('movies.index');
+    return redirect()->route('home');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // Profile routes
@@ -40,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
     
     // Watchlist routes (authenticated users only)
-    Route::get('/watchlist', [WatchlistController::class, 'index'])->name('movies.watchlist');
+    Route::get('/watchlist', [WatchlistController::class, 'index'])->name('watchlist.index');
     Route::post('/movies/{movie}/watchlist', [WatchlistController::class, 'toggle'])->name('movies.watchlist.toggle');
     Route::post('/movies/{movie}/watchlist/add', [WatchlistController::class, 'add'])->name('movies.watchlist.add');
     Route::delete('/movies/{movie}/watchlist', [WatchlistController::class, 'remove'])->name('movies.watchlist.remove');
