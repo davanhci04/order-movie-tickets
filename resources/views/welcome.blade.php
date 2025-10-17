@@ -2,65 +2,86 @@
     <!-- Hero Carousel Section -->
     @if($featuredMovies->count() > 0)
         <div class="relative bg-gray-900 overflow-hidden">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
                 <div class="relative">
                     <!-- Carousel Container -->
                     <div class="carousel-container" id="heroCarousel">
                         @foreach($featuredMovies as $index => $movie)
                             <div class="carousel-slide {{ $index === 0 ? 'active' : '' }}" data-slide="{{ $index }}">
-                                <div class="flex flex-col lg:flex-row items-center py-16 lg:py-24">
+                                <div class="relative flex flex-col lg:flex-row items-center min-h-[500px] lg:min-h-[600px]">
+                                    
+                                    <!-- Full-width Poster Background -->
+                                    <div class="absolute inset-0 z-0">
+                                        @if($movie->poster_url)
+                                            <img src="{{ $movie->poster_url }}" 
+                                                 alt="{{ $movie->title }}" 
+                                                 class="w-full h-full object-cover">
+                                        @else
+                                            <div class="w-full h-full bg-gradient-to-br from-gray-700 to-gray-800"></div>
+                                        @endif
+                                        <!-- Fade overlay for readability -->
+                                        <div class="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/20 lg:from-black/90 lg:via-black/60 lg:to-transparent"></div>
+                                    </div>
+
                                     <!-- Movie Info -->
-                                    <div class="lg:w-1/2 lg:pr-12 mb-8 lg:mb-0">
+                                    <div class="relative z-10 lg:w-1/2 px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
                                         <div class="text-center lg:text-left">
-                                            <h1 class="text-4xl lg:text-6xl font-bold text-white mb-4">
+                                            <h1 class="text-4xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">
                                                 {{ $movie->title }}
                                             </h1>
                                             <div class="flex items-center justify-center lg:justify-start space-x-4 mb-6">
-                                                <span class="text-yellow-400 flex items-center">
+                                                <span class="text-yellow-400 flex items-center drop-shadow">
                                                     <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                                                     </svg>
                                                     {{ number_format($movie->average_rating, 1) }}
                                                 </span>
-                                                <span class="text-gray-300">{{ $movie->release_year }}</span>
+                                                <span class="text-gray-300 drop-shadow">{{ $movie->release_year }}</span>
                                                 @if($movie->duration)
-                                                    <span class="text-gray-300">{{ $movie->duration }} phút</span>
+                                                    <span class="text-gray-300 drop-shadow">{{ $movie->duration }} phút</span>
                                                 @endif
                                             </div>
                                             @if($movie->description)
-                                                <p class="text-gray-300 text-lg mb-8 leading-relaxed">
+                                                <p class="text-gray-100 text-lg mb-8 leading-relaxed drop-shadow max-w-2xl">
                                                     {{ Str::limit($movie->description, 200) }}
                                                 </p>
                                             @endif
                                             <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                                                 <a href="{{ route('movies.show', $movie) }}" 
-                                                   class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 text-center">
+                                                   class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 text-center shadow-lg hover:shadow-xl transform hover:scale-105">
                                                     Xem Chi Tiết
                                                 </a>
                                                 @auth
-                                                    <button onclick="toggleWatchlist({{ $movie->id }})" 
-                                                            id="hero-watchlist-btn-{{ $movie->id }}"
-                                                            class="bg-gray-700 hover:bg-gray-600 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200">
-                                                        {{ auth()->user()->hasInWatchlist($movie->id) ? 'Xóa khỏi Danh Sách' : 'Thêm vào Danh Sách' }}
-                                                    </button>
+                                                    @if(auth()->user()->hasInWatchlist($movie->id))
+                                                        <button onclick="toggleWatchlist({{ $movie->id }})" 
+                                                                id="hero-watchlist-btn-{{ $movie->id }}"
+                                                                class="bg-transparent border-2 border-white/30 text-green-500 p-3 rounded-lg transition-all duration-300 hover:border-white/50 hover:text-white/90 hover:bg-white/10">
+                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                            </svg>
+                                                            
+                                                        </button>
+                                                    @else
+                                                        <button onclick="toggleWatchlist({{ $movie->id }})" 
+                                                                id="hero-watchlist-btn-{{ $movie->id }}"
+                                                                class="bg-white/20 hover:bg-white/30 text-white border-2 border-white/50 hover:border-white/70 p-3 rounded-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm">
+                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                                                            </svg>
+                                                        </button>
+                                                    @endif
                                                 @endauth
                                             </div>
                                         </div>
                                     </div>
                                     
-                                    <!-- Movie Poster -->
-                                    <div class="lg:w-1/2">
-                                        <div class="relative max-w-md mx-auto">
+                                    <!-- Poster chính -->
+                                    <div class="hidden lg:flex lg:w-1/2 relative z-10 pointer-events-none items-center justify-center">
+                                        <div class="max-w-sm mx-auto px-8">
                                             @if($movie->poster_url)
                                                 <img src="{{ $movie->poster_url }}" 
                                                      alt="{{ $movie->title }}" 
-                                                     class="w-full h-96 lg:h-[500px] object-cover rounded-xl shadow-2xl">
-                                            @else
-                                                <div class="w-full h-96 lg:h-[500px] bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl shadow-2xl flex items-center justify-center">
-                                                    <svg class="w-24 h-24 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 4V2a1 1 0 011-1h8a1 1 0 011 1v2h4a1 1 0 011 1v16a1 1 0 01-1 1H6a1 1 0 01-1-1V5a1 1 0 011-1h1z"></path>
-                                                    </svg>
-                                                </div>
+                                                     class="w-full aspect-[2/3] object-cover rounded-xl shadow-2xl ring-4 ring-white/20">
                                             @endif
                                         </div>
                                     </div>
@@ -70,12 +91,12 @@
                     </div>
 
                     <!-- Carousel Controls -->
-                    <button onclick="previousSlide()" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200">
+                    <button onclick="previousSlide()" class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200 z-10 lg:left-8">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                         </svg>
                     </button>
-                    <button onclick="nextSlide()" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200">
+                    <button onclick="nextSlide()" class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-200 z-10 lg:right-8">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                         </svg>
@@ -381,10 +402,20 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update button text
-                    button.textContent = data.inWatchlist ? 'Xóa khỏi Danh Sách' : 'Thêm vào Danh Sách';
+                    // Update button appearance based on status
+                    const svg = button.querySelector('svg');
+                    
+                    if (data.inWatchlist) {
+                        // Style for "In watchlist" - checkmark icon, transparent background
+                        button.className = 'bg-transparent border-2 border-white/30 text-white/70 p-3 rounded-lg transition-all duration-300 hover:border-white/50 hover:text-white/90 hover:bg-white/10';
+                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+                    } else {
+                        // Style for "Add to watchlist" - plus icon, semi-transparent background
+                        button.className = 'bg-white/20 hover:bg-white/30 text-white border-2 border-white/50 hover:border-white/70 p-3 rounded-lg transition-all duration-300 hover:scale-105 backdrop-blur-sm';
+                        svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>';
+                    }
 
-                    // Show success message
+                    // Show success message with enhanced styling
                     const message = document.createElement('div');
                     message.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
                     message.textContent = data.message;
