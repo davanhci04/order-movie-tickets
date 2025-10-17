@@ -11,9 +11,55 @@ class MovieController extends Controller
     /**
      * Display a listing of movies.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $movies = Movie::orderBy('created_at', 'desc')->paginate(12);
+        $query = Movie::query();
+        $search = $request->get('search');
+
+        // Apply search if provided - search across multiple fields
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                  ->orWhere('description', 'like', '%' . $search . '%')
+                  ->orWhere('director', 'like', '%' . $search . '%')
+                  ->orWhere('genre', 'like', '%' . $search . '%');
+            });
+        }
+        
+        // Handle sorting
+        $sort = $request->get('sort', 'created_desc');
+        
+        switch ($sort) {
+            case 'title':
+                $query->orderBy('title', 'asc');
+                break;
+            case 'rating_desc':
+                $query->withAvg('ratings', 'score')
+                      ->orderByDesc('ratings_avg_score')
+                      ->orderBy('title', 'asc'); // Secondary sort by title
+                break;
+            case 'rating_asc':
+                $query->withAvg('ratings', 'score')
+                      ->orderBy('ratings_avg_score', 'asc')
+                      ->orderBy('title', 'asc'); // Secondary sort by title
+                break;
+            case 'year_desc':
+                $query->orderByDesc('release_year')
+                      ->orderBy('title', 'asc'); // Secondary sort by title
+                break;
+            case 'year_asc':
+                $query->orderBy('release_year', 'asc')
+                      ->orderBy('title', 'asc'); // Secondary sort by title
+                break;
+            case 'created_desc':
+            default:
+                $query->orderByDesc('created_at')
+                      ->orderBy('title', 'asc'); // Secondary sort by title
+                break;
+        }
+        
+        $movies = $query->paginate(12)->appends($request->query());
+        
         return view('movies.index', compact('movies'));
     }
 

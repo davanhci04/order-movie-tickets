@@ -2,17 +2,59 @@
 class MoviesWatchlistManager {
     constructor() {
         this.init();
+        this.attachEventListeners();
     }
 
     init() {
+        // Only initialize on user watchlist page, not admin pages
+        if (window.location.pathname.includes('/admin/')) {
+            console.log('Admin page detected, skipping Movies Watchlist Manager');
+            return;
+        }
+
         this.csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         if (!this.csrfToken) {
             console.warn('CSRF token not found. Watchlist functionality may not work.');
         }
+        console.log('Movies Watchlist Manager initialized');
+    }
+
+    attachEventListeners() {
+        // Only attach if not admin page
+        if (window.location.pathname.includes('/admin/')) {
+            return;
+        }
+
+        // Use event delegation for better performance
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.remove-watchlist-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                
+                const button = e.target.closest('.remove-watchlist-btn');
+                const movieId = button.dataset.movieId;
+                if (movieId) {
+                    console.log('Remove button clicked for movie:', movieId);
+                    this.removeFromWatchlist(movieId);
+                }
+            }
+        }, true); // Use capture phase to handle before other listeners
+
+        const removeButtons = document.querySelectorAll('.remove-watchlist-btn');
+        console.log('Remove watchlist buttons found:', removeButtons.length);
     }
 
     async removeFromWatchlist(movieId) {
         if (!confirm('Bạn có chắc muốn xóa phim này khỏi danh sách xem?')) {
+            return;
+        }
+
+        console.log('Removing movie from watchlist:', movieId);
+        console.log('CSRF Token:', this.csrfToken);
+
+        if (!this.csrfToken) {
+            alert('CSRF token không tìm thấy. Vui lòng refresh trang.');
             return;
         }
 
@@ -25,7 +67,17 @@ class MoviesWatchlistManager {
                 }
             });
 
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('HTTP error response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const data = await response.json();
+            console.log('Response data:', data);
             
             if (data.success) {
                 // Show success message before reload
@@ -40,7 +92,7 @@ class MoviesWatchlistManager {
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Có lỗi xảy ra khi xóa phim');
+            alert(`Có lỗi xảy ra khi xóa phim: ${error.message}`);
         }
     }
 
@@ -67,5 +119,4 @@ class MoviesWatchlistManager {
 // Initialize movies watchlist manager
 const moviesWatchlistManager = new MoviesWatchlistManager();
 
-// Global function for backward compatibility
-window.removeFromWatchlist = (movieId) => moviesWatchlistManager.removeFromWatchlist(movieId);
+// No global functions to avoid conflicts with admin scripts

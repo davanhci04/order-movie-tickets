@@ -64,3 +64,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 });
 
 require __DIR__.'/auth.php';
+
+// Debug routes (only in development)
+if (app()->environment('local')) {
+    require __DIR__.'/debug.php';
+}

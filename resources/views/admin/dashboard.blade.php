@@ -140,5 +140,5 @@
         </div>
     </div>
 
-    @vite(['resources/js/app.js', 'resources/js/admin-dashboard.js'])
+    @vite(['resources/js/app.js'])
 </x-app-layout>

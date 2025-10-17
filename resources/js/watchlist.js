@@ -10,6 +10,87 @@ class WatchlistManager {
         if (!this.csrfToken) {
             console.warn('CSRF token not found. Watchlist functionality may not work.');
         }
+        
+        // Check for duplicate IDs on page load
+        this.checkForDuplicateIds();
+        
+        // Also attach event listeners as backup
+        this.attachEventListeners();
+    }
+    
+    attachEventListeners() {
+        document.querySelectorAll('[id*="watchlist-btn"]').forEach(button => {
+            // Skip remove buttons - they're handled by movies-watchlist.js
+            if (button.id.includes('remove-watchlist-btn')) {
+                return;
+            }
+            
+            // Remove existing listener if any
+            button.removeEventListener('click', this.handleButtonClick);
+            
+            // Add new listener with double-click prevention
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Prevent double-clicks
+                if (button.disabled) {
+                    console.log('Button already disabled, ignoring click');
+                    return;
+                }
+                
+                // Skip remove buttons - they're handled by movies-watchlist.js
+                if (button.id.includes('remove-watchlist-btn')) {
+                    return;
+                }
+                
+                const movieId = this.extractMovieId(button.id);
+                if (movieId) {
+                    console.log('Click detected on button:', button.id, 'movieId:', movieId);
+                    this.toggle(movieId);
+                }
+            });
+        });
+    }
+    
+    extractMovieId(buttonId) {
+        // Extract movie ID from button ID
+        const patterns = [
+            /watchlist-btn-(\d+)/,
+            /hero-watchlist-btn-(\d+)/,
+            /top-rated-watchlist-btn-(\d+)/,
+            /recent-watchlist-btn-(\d+)/,
+            /recommended-watchlist-btn-(\d+)/
+        ];
+        
+        for (const pattern of patterns) {
+            const match = buttonId.match(pattern);
+            if (match) {
+                return parseInt(match[1]);
+            }
+        }
+        return null;
+    }
+    
+    checkForDuplicateIds() {
+        const watchlistButtons = document.querySelectorAll('[id*="watchlist-btn"]');
+        const ids = [];
+        const duplicates = [];
+        
+        watchlistButtons.forEach(btn => {
+            if (ids.includes(btn.id)) {
+                duplicates.push(btn.id);
+            } else {
+                ids.push(btn.id);
+            }
+        });
+        
+        if (duplicates.length > 0) {
+            console.error('Duplicate watchlist button IDs found:', duplicates);
+        }
+        
+        // Only log button count, not all IDs
+        console.log('Watchlist buttons found:', ids.length);
     }
 
     async toggle(movieId) {
@@ -52,18 +133,36 @@ class WatchlistManager {
     }
 
     findButton(movieId) {
-        return document.getElementById(`hero-watchlist-btn-${movieId}`) ||
-               document.getElementById(`top-rated-watchlist-btn-${movieId}`) ||
-               document.getElementById(`recent-watchlist-btn-${movieId}`) ||
-               document.getElementById(`recommended-watchlist-btn-${movieId}`) ||
-               document.getElementById(`watchlist-btn-${movieId}`);
+        // Check each possible button ID and log which one is found
+        const buttonIds = [
+            `watchlist-btn-${movieId}`,
+            `hero-watchlist-btn-${movieId}`,
+            `top-rated-watchlist-btn-${movieId}`,
+            `recent-watchlist-btn-${movieId}`,
+            `recommended-watchlist-btn-${movieId}`
+        ];
+        
+        for (const id of buttonIds) {
+            const button = document.getElementById(id);
+            if (button) {
+                return button;
+            }
+        }
+        
+        console.error('No watchlist button found for movie ID:', movieId);
+        return null;
     }
 
     updateButtonState(button, inWatchlist) {
         const isHeroButton = button.id.includes('hero-watchlist-btn');
+        const isDetailPageButton = button.classList.contains('inline-flex');
+        
+        console.log('Updating button:', button.id, 'isHero:', isHeroButton, 'isDetailPage:', isDetailPageButton, 'inWatchlist:', inWatchlist);
         
         if (isHeroButton) {
             this.updateHeroButton(button, inWatchlist);
+        } else if (isDetailPageButton) {
+            this.updateDetailPageButton(button, inWatchlist);
         } else {
             this.updateSectionButton(button, inWatchlist);
         }
@@ -71,49 +170,126 @@ class WatchlistManager {
 
     updateHeroButton(button, inWatchlist) {
         const svg = button.querySelector('svg');
+        if (!svg) return;
+        
         if (inWatchlist) {
             // Style for "In watchlist" - checkmark icon, GREEN background
-            button.className = 'bg-green-500 hover:bg-green-600 text-white border-2 border-green-400 p-3 rounded-lg transition-all duration-200 shadow-lg';
-            svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
+            button.className = 'bg-green-500 hover:bg-green-600 text-white border-2 border-green-400 p-3 rounded-lg transition-all duration-300 shadow-lg';
+            button.title = 'Đã thêm vào danh sách xem';
+            
+            // Update to checkmark icon
+            svg.setAttribute('class', 'w-6 h-6');
             svg.setAttribute('fill', 'none');
             svg.setAttribute('stroke', 'currentColor');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>';
         } else {
             // Style for "Add to watchlist" - plus icon, blue background
-            button.className = 'bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-500 p-3 rounded-lg transition-all duration-200 hover:scale-105 shadow-lg';
-            svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>';
+            button.className = 'bg-blue-600 hover:bg-blue-700 text-white border-2 border-blue-500 p-3 rounded-lg transition-all duration-300 hover:scale-105 shadow-lg';
+            button.title = 'Thêm vào danh sách xem';
+            
+            // Update to plus icon
+            svg.setAttribute('class', 'w-6 h-6');
             svg.setAttribute('fill', 'none');
             svg.setAttribute('stroke', 'currentColor');
+            svg.setAttribute('viewBox', '0 0 24 24');
+            svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>';
         }
     }
 
     updateSectionButton(button, inWatchlist) {
+        // IMMEDIATELY clean button content first to prevent text flashing
+        const existingTextNodes = Array.from(button.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
+        existingTextNodes.forEach(node => node.remove());
+        const existingSpans = button.querySelectorAll('span');
+        existingSpans.forEach(span => span.remove());
+        
+        console.log('updateSectionButton called for:', button.id, 'inWatchlist:', inWatchlist);
+        
         // Remove all existing background classes first
         button.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'bg-red-500', 'hover:bg-red-600');
+        
+        // Find existing SVG element
+        const svg = button.querySelector('svg');
+        console.log('Found SVG:', svg);
         
         if (inWatchlist) {
             // Added to watchlist - RED heart with immediate effect
             button.classList.add('bg-red-500', 'hover:bg-red-600');
             button.title = 'Xóa khỏi danh sách xem';
-            button.innerHTML = `
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
-                </svg>
-            `;
-            // Force immediate style application
-            button.style.backgroundColor = '#ef4444';
-            setTimeout(() => { button.style.backgroundColor = ''; }, 100);
+            
+            // Update SVG to heart icon
+            if (svg) {
+                svg.setAttribute('class', 'w-4 h-4');
+                svg.setAttribute('fill', 'currentColor');
+                svg.setAttribute('viewBox', '0 0 20 20');
+                svg.removeAttribute('stroke');
+                svg.removeAttribute('stroke-linecap');
+                svg.removeAttribute('stroke-linejoin');
+                svg.removeAttribute('stroke-width');
+                svg.innerHTML = '<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 0 15.656 0L10 6.343l1.172-1.171a4 4 0 1 15.656 5.656L10 17.657l-6.828-6.829a4 4 0 0 10-5.656z" clip-rule="evenodd"></path>';
+                console.log('Updated to heart icon');
+                
+                // Force clean button - only SVG
+                button.innerHTML = svg.outerHTML;
+            }
+            
         } else {
             // Removed from watchlist - BLUE plus with immediate effect
             button.classList.add('bg-blue-600', 'hover:bg-blue-700');
             button.title = 'Thêm vào danh sách xem';
-            button.innerHTML = `
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
-            `;
-            // Force immediate style application
-            button.style.backgroundColor = '#2563eb';
-            setTimeout(() => { button.style.backgroundColor = ''; }, 100);
+            
+            // Update SVG to plus icon
+            if (svg) {
+                svg.setAttribute('class', 'w-4 h-4');
+                svg.removeAttribute('fill');
+                svg.setAttribute('stroke', 'currentColor');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('stroke-linecap', 'round');
+                svg.setAttribute('stroke-linejoin', 'round');
+                svg.setAttribute('stroke-width', '2');
+                svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>';
+                console.log('Updated to plus icon');
+                
+                // Force clean button - only SVG  
+                button.innerHTML = svg.outerHTML;
+            }
+        }
+    }
+
+    updateDetailPageButton(button, inWatchlist) {
+        // Remove existing background classes
+        button.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'bg-red-600', 'hover:bg-red-700');
+        
+        const svg = button.querySelector('svg');
+        const textSpan = button.querySelector('span:last-child');
+        
+        if (inWatchlist) {
+            // In watchlist - RED background with heart icon
+            button.classList.add('bg-red-600', 'hover:bg-red-700');
+            button.title = 'Xóa khỏi danh sách xem';
+            
+            if (textSpan) textSpan.textContent = 'Đã thêm';
+            
+            if (svg) {
+                svg.setAttribute('fill', 'currentColor');
+                svg.setAttribute('viewBox', '0 0 20 20');
+                svg.removeAttribute('stroke');
+                svg.innerHTML = '<path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>';
+            }
+        } else {
+            // Not in watchlist - BLUE background with plus icon
+            button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+            button.title = 'Thêm vào danh sách xem';
+            
+            if (textSpan) textSpan.textContent = 'Thêm vào danh sách';
+            
+            if (svg) {
+                svg.removeAttribute('fill');
+                svg.setAttribute('stroke', 'currentColor');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>';
+            }
         }
     }
 
@@ -135,5 +311,4 @@ class WatchlistManager {
 // Initialize watchlist manager
 const watchlistManager = new WatchlistManager();
 
-// Global function for backward compatibility
-window.toggleWatchlist = (movieId) => watchlistManager.toggle(movieId);
+// No global functions - using event-driven approach only

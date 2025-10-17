@@ -185,5 +185,5 @@
         window.adminWatchlistRemoveRoute = '{{ route('admin.watchlists.remove') }}';
     </script>
     
-    @vite(['resources/js/app.js', 'resources/js/admin-users-watchlist.js'])
+    @vite(['resources/js/app.js'])
 </x-app-layout>
