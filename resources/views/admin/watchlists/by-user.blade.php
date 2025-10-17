@@ -11,9 +11,6 @@
                     Quản lý Watchlist
                 </h2>
             </div>
-            <div class="bg-purple-100 text-purple-800 px-4 py-2 rounded-lg text-sm font-medium">
-                {{ $users->total() }} users có watchlist
-            </div>
         </div>
     </x-slot>
 
@@ -21,10 +18,6 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <div class="mb-6">
-                        <p class="text-gray-600">Quản lý watchlist của tất cả users - xem chi tiết và có thể xóa phim khỏi watchlist của bất kỳ user nào</p>
-                    </div>
-
                     @if($users->count() > 0)
                         <div class="grid gap-6">
                             @foreach($users as $user)
@@ -55,16 +48,25 @@
                                         <div class="flex items-center space-x-6">
                                             <!-- Stats -->
                                             <div class="text-center">
-                                                <p class="text-3xl font-bold text-purple-600">{{ $user->watchlist_count }}</p>
-                                                <p class="text-sm text-gray-600">phim trong watchlist</p>
+                                                <p class="text-3xl font-bold {{ $user->watchlist_count > 0 ? 'text-purple-600' : 'text-gray-400' }}">{{ $user->watchlist_count }}</p>
+                                                <p class="text-sm text-gray-600">
+                                                    {{ $user->watchlist_count > 0 ? 'phim trong watchlist' : 'chưa có phim nào' }}
+                                                </p>
                                             </div>
 
                                             <!-- Actions -->
                                             <div class="flex flex-col space-y-2">
-                                                <a href="{{ route('admin.users.watchlist', $user) }}" 
-                                                   class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 text-center">
-                                                    Xem Watchlist
-                                                </a>
+                                                @if($user->watchlist_count > 0)
+                                                    <a href="{{ route('admin.users.watchlist', $user) }}" 
+                                                       class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 text-center">
+                                                        Xem Watchlist
+                                                    </a>
+                                                @else
+                                                    <button disabled 
+                                                            class="bg-gray-300 text-gray-500 px-4 py-2 rounded-lg text-sm font-medium cursor-not-allowed">
+                                                        Watchlist trống
+                                                    </button>
+                                                @endif
                                                 <a href="{{ route('admin.users.show', $user) }}" 
                                                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 text-center">
                                                     Chi tiết User
@@ -90,8 +92,8 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                                 </svg>
                             </div>
-                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Chưa có user nào có watchlist</h3>
-                            <p class="text-gray-600">Các users chưa thêm phim nào vào watchlist của họ.</p>
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2">Chưa có user nào trong hệ thống</h3>
+                            <p class="text-gray-600">Hệ thống chưa có người dùng nào được đăng ký.</p>
                         </div>
                     @endif
                 </div>

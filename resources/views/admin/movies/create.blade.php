@@ -1,104 +1,111 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-100 leading-tight">
-                {{ __('Add New Movie') }}
-            </h2>
-            <a href="{{ route('admin.movies.index') }}" class="text-red-400 hover:text-red-300">
-                ← Back to Movies
-            </a>
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('admin.movies.index') }}" class="text-blue-600 hover:text-blue-800 transition duration-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </a>
+                <h2 class="font-semibold text-xl text-blue-800 leading-tight">
+                    Thêm Phim Mới
+                </h2>
+            </div>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="card">
-                <div class="card-body">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="p-6">
                     <form action="{{ route('admin.movies.store') }}" method="POST" class="space-y-6">
                         @csrf
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Title -->
                             <div class="md:col-span-2">
-                                <label for="title" class="block text-sm font-medium mb-2 text-gray-200">Title *</label>
+                                <label for="title" class="block text-sm font-medium mb-2 text-gray-700">Tiêu đề phim *</label>
                                 <input type="text" name="title" id="title" value="{{ old('title') }}" 
-                                       class="form-input" required>
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
                                 @error('title')
-                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Release Year -->
                             <div>
-                                <label for="release_year" class="block text-sm font-medium mb-2 text-gray-200">Release Year *</label>
+                                <label for="release_year" class="block text-sm font-medium mb-2 text-gray-700">Năm phát hành *</label>
                                 <input type="number" name="release_year" id="release_year" value="{{ old('release_year') }}" 
                                        min="1900" max="{{ date('Y') + 5 }}"
-                                       class="form-input" required>
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
                                 @error('release_year')
-                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Genre -->
                             <div>
-                                <label for="genre" class="block text-sm font-medium mb-2 text-gray-200">Genre</label>
+                                <label for="genre" class="block text-sm font-medium mb-2 text-gray-700">Thể loại</label>
                                 <input type="text" name="genre" id="genre" value="{{ old('genre') }}" 
-                                       class="form-input"
-                                       placeholder="e.g., Action, Drama, Comedy">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                       placeholder="Ví dụ: Hành động, Tình cảm, Hài kịch">
                                 @error('genre')
-                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Director -->
                             <div>
-                                <label for="director" class="block text-sm font-medium mb-2 text-gray-200">Director</label>
+                                <label for="director" class="block text-sm font-medium mb-2 text-gray-700">Đạo diễn</label>
                                 <input type="text" name="director" id="director" value="{{ old('director') }}" 
-                                       class="form-input">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                                 @error('director')
-                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Duration -->
                             <div>
-                                <label for="duration" class="block text-sm font-medium mb-2 text-gray-200">Duration (minutes)</label>
+                                <label for="duration" class="block text-sm font-medium mb-2 text-gray-700">Thời lượng (phút)</label>
                                 <input type="number" name="duration" id="duration" value="{{ old('duration') }}" 
                                        min="1"
-                                       class="form-input">
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                                 @error('duration')
-                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Poster URL -->
                             <div class="md:col-span-2">
-                                <label for="poster_url" class="block text-sm font-medium mb-2 text-gray-200">Poster URL</label>
+                                <label for="poster_url" class="block text-sm font-medium mb-2 text-gray-700">URL Poster</label>
                                 <input type="url" name="poster_url" id="poster_url" value="{{ old('poster_url') }}" 
-                                       class="form-input"
+                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                                        placeholder="https://example.com/poster.jpg">
                                 @error('poster_url')
-                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
                             <!-- Description -->
                             <div class="md:col-span-2">
-                                <label for="description" class="block text-sm font-medium mb-2 text-gray-200">Description *</label>
+                                <label for="description" class="block text-sm font-medium mb-2 text-gray-700">Mô tả *</label>
                                 <textarea name="description" id="description" rows="4" required
-                                          class="form-input">{{ old('description') }}</textarea>
+                                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                          placeholder="Nhập mô tả về phim...">{{ old('description') }}</textarea>
                                 @error('description')
-                                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
 
-                        <div class="flex items-center justify-end space-x-4">
-                            <a href="{{ route('admin.movies.index') }}" class="text-gray-400 hover:text-gray-300">
-                                Cancel
+                        <div class="flex items-center justify-end space-x-4 pt-4 border-t border-gray-200">
+                            <a href="{{ route('admin.movies.index') }}" 
+                               class="text-gray-600 hover:text-gray-800 font-medium">
+                                Hủy
                             </a>
-                            <button type="submit" class="btn-primary">
-                                Create Movie
+                            <button type="submit" 
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition duration-200">
+                                Tạo Phim
                             </button>
                         </div>
                     </form>

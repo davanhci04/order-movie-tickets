@@ -10,13 +10,13 @@ use Illuminate\Http\Request;
 class WatchlistManagementController extends Controller
 {
     /**
-     * Display watchlist by users (main function)
+     * Display watchlist by users (main function) - Show all users
      */
     public function byUser()
     {
         $users = User::withCount('watchlist')
-            ->having('watchlist_count', '>', 0)
             ->orderBy('watchlist_count', 'desc')
+            ->orderBy('name', 'asc')
             ->paginate(20);
 
         return view('admin.watchlists.by-user', compact('users'));
