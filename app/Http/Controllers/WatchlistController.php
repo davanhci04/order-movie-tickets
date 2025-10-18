@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
+use App\Models\User;
 use App\Models\Watchlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+/**
+ * @property User $user
+ */
 
 class WatchlistController extends Controller
 {
@@ -14,7 +19,10 @@ class WatchlistController extends Controller
      */
     public function index()
     {
-        $watchlistMovies = Auth::user()->watchlistMovies()
+        /** @var User $user */
+        $user = Auth::user();
+        
+        $watchlistMovies = $user->watchlistMovies()
             ->withCount('ratings')
             ->withAvg('ratings', 'score')
             ->orderBy('watchlists.created_at', 'desc')
@@ -28,6 +36,7 @@ class WatchlistController extends Controller
      */
     public function add(Request $request, Movie $movie)
     {
+        /** @var User $user */
         $user = Auth::user();
         
         // Kiểm tra nếu phim đã có trong watchlist
@@ -56,6 +65,7 @@ class WatchlistController extends Controller
      */
     public function remove(Request $request, Movie $movie)
     {
+        /** @var User $user */
         $user = Auth::user();
         
         $watchlistItem = Watchlist::where('user_id', $user->id)
@@ -83,6 +93,7 @@ class WatchlistController extends Controller
      */
     public function toggle(Request $request, Movie $movie)
     {
+        /** @var User $user */
         $user = Auth::user();
         
         if ($user->hasInWatchlist($movie->id)) {

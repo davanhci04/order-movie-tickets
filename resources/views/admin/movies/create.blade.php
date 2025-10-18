@@ -18,7 +18,7 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
-                    <form action="{{ route('admin.movies.store') }}" method="POST" class="space-y-6">
+                    <form action="{{ route('admin.movies.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -75,12 +75,54 @@
                                 @enderror
                             </div>
 
-                            <!-- Poster URL -->
+                            <!-- Poster -->
                             <div class="md:col-span-2">
-                                <label for="poster_url" class="block text-sm font-medium mb-2 text-gray-700">URL Poster</label>
-                                <input type="url" name="poster_url" id="poster_url" value="{{ old('poster_url') }}" 
-                                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                                       placeholder="https://example.com/poster.jpg">
+                                <label class="block text-sm font-medium mb-3 text-gray-700">Poster phim</label>
+                                
+                                <!-- Tab Navigation -->
+                                <div class="flex space-x-1 mb-4 bg-gray-100 p-1 rounded-lg">
+                                    <button type="button" id="upload-tab" class="flex-1 py-2 px-3 text-sm font-medium rounded-md bg-white text-blue-600 shadow-sm">
+                                        Upload
+                                    </button>
+                                    <button type="button" id="url-tab" class="flex-1 py-2 px-3 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700">
+                                        Nhập URL
+                                    </button>
+                                </div>
+
+                                <!-- Upload File Section -->
+                                <div id="upload-section" class="space-y-3">
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors">
+                                        <input type="file" name="poster_file" id="poster_file" accept="image/*" class="hidden">
+                                        <label for="poster_file" class="cursor-pointer">
+                                            <div class="space-y-3">
+                                                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                                <div class="text-gray-600">
+                                                    <span class="font-medium text-blue-600 hover:text-blue-500">Chọn file</span>
+                                                    <span> hoặc kéo thả vào đây</span>
+                                                </div>
+                                                <p class="text-xs text-gray-500">PNG, JPG, WEBP up to 5MB</p>
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div id="file-preview" class="hidden">
+                                        <img id="preview-image" class="max-w-xs mx-auto rounded-lg shadow-md" alt="Preview">
+                                        <p id="file-name" class="text-sm text-gray-600 text-center mt-2"></p>
+                                    </div>
+                                </div>
+
+                                <!-- URL Section -->
+                                <div id="url-section" class="hidden">
+                                    <input type="url" name="poster_url" id="poster_url" value="{{ old('poster_url') }}" 
+                                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                           placeholder="https://example.com/poster.jpg">
+                                    <p class="text-xs text-gray-500 mt-1">Nhập URL trực tiếp đến hình ảnh poster</p>
+                                </div>
+
+                                @error('poster_file')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                                 @error('poster_url')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
@@ -113,4 +155,49 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadTab = document.getElementById('upload-tab');
+            const urlTab = document.getElementById('url-tab');
+            const uploadSection = document.getElementById('upload-section');
+            const urlSection = document.getElementById('url-section');
+            const posterFile = document.getElementById('poster_file');
+            const filePreview = document.getElementById('file-preview');
+            const previewImage = document.getElementById('preview-image');
+            const fileName = document.getElementById('file-name');
+
+            // Tab switching
+            uploadTab.addEventListener('click', function() {
+                uploadTab.className = 'flex-1 py-2 px-3 text-sm font-medium rounded-md bg-white text-blue-600 shadow-sm';
+                urlTab.className = 'flex-1 py-2 px-3 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700';
+                uploadSection.classList.remove('hidden');
+                urlSection.classList.add('hidden');
+            });
+
+            urlTab.addEventListener('click', function() {
+                urlTab.className = 'flex-1 py-2 px-3 text-sm font-medium rounded-md bg-white text-blue-600 shadow-sm';
+                uploadTab.className = 'flex-1 py-2 px-3 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700';
+                urlSection.classList.remove('hidden');
+                uploadSection.classList.add('hidden');
+            });
+
+            // File preview
+            posterFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                        fileName.textContent = file.name;
+                        filePreview.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    filePreview.classList.add('hidden');
+                }
+            });
+        });
+    </script>
 </x-app-layout>

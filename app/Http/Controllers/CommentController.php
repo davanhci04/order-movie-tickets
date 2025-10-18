@@ -21,7 +21,7 @@ class CommentController extends Controller
         Comment::create([
             'user_id' => Auth::id(),
             'movie_id' => $movie->id,
-            'content' => $request->content
+            'content' => $request->input('content')
         ]);
 
         return back()->with('success', 'Comment added successfully!');
@@ -42,7 +42,7 @@ class CommentController extends Controller
         ]);
 
         $comment->update([
-            'content' => $request->content
+            'content' => $request->input('content')
         ]);
 
         return back()->with('success', 'Comment updated successfully!');

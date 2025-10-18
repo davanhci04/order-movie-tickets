@@ -13,6 +13,7 @@ class Movie extends Model
         'title',
         'description',
         'poster_url',
+        'cloudinary_public_id',
         'release_year',
         'genre',
         'duration',
