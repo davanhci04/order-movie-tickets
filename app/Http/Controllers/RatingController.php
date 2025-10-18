@@ -28,7 +28,7 @@ class RatingController extends Controller
         if ($existingRating) {
             // Update existing rating
             $existingRating->update(['score' => $request->score]);
-            $message = 'Rating updated successfully!';
+            $message = 'Cập nhật đánh giá thành công!';
         } else {
             // Create new rating
             Rating::create([
@@ -36,7 +36,7 @@ class RatingController extends Controller
                 'movie_id' => $movie->id,
                 'score' => $request->score
             ]);
-            $message = 'Rating added successfully!';
+            $message = 'Thêm đánh giá thành công!';
         }
 
         return back()->with('success', $message);

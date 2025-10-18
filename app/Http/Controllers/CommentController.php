@@ -24,7 +24,7 @@ class CommentController extends Controller
             'content' => $request->input('content')
         ]);
 
-        return back()->with('success', 'Comment added successfully!');
+        return back()->with('success', 'Thêm bình luận thành công!');
     }
 
     /**
@@ -45,7 +45,7 @@ class CommentController extends Controller
             'content' => $request->input('content')
         ]);
 
-        return back()->with('success', 'Comment updated successfully!');
+        return back()->with('success', 'Cập nhật bình luận thành công!');
     }
 
     /**
