@@ -11,12 +11,8 @@
                     Quản lý Phim
                 </h2>
             </div>
-            <a href="{{ route('admin.movies.create') }}" 
-               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition duration-200 flex items-center space-x-2">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-                <span>Thêm Phim Mới</span>
+            <a href="{{ route('admin.movies.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Thêm phim mới
             </a>
         </div>
     </x-slot>
@@ -81,20 +77,20 @@
                                             </div>
                                         </td>
                                         <td class="py-4 px-4">
-                                            <div class="flex items-center space-x-3">
+                                            <div class="flex flex-wrap gap-2">
                                                 <a href="{{ route('movies.show', $movie) }}" 
-                                                   class="text-blue-600 hover:text-blue-800 font-medium text-sm" target="_blank">
+                                                   class="text-blue-600 hover:text-blue-900 text-xs bg-blue-100 px-2 py-1 rounded" target="_blank">
                                                     Xem
                                                 </a>
                                                 <a href="{{ route('admin.movies.edit', $movie) }}" 
-                                                   class="text-green-600 hover:text-green-800 font-medium text-sm">
+                                                   class="text-green-600 hover:text-green-900 text-xs bg-green-100 px-2 py-1 rounded">
                                                     Sửa
                                                 </a>
                                                 <form action="{{ route('admin.movies.destroy', $movie) }}" method="POST" class="inline">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" 
-                                                            class="text-red-600 hover:text-red-800 font-medium text-sm" 
+                                                            class="text-red-600 hover:text-red-900 text-xs bg-red-100 px-2 py-1 rounded" 
                                                             onclick="return confirm('Bạn có chắc chắn? Điều này sẽ xóa tất cả đánh giá và bình luận cho phim này.')">
                                                         Xóa
                                                     </button>

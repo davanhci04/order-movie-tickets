@@ -1,12 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <div class="flex items-center space-x-4">
+            <a href="{{ route('admin.dashboard') }}" class="text-blue-600 hover:text-blue-800 transition duration-200">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </a>
+            <h2 class="font-semibold text-xl text-blue-800 leading-tight">
                 {{ __('Quản lý người dùng') }}
             </h2>
-            <a href="{{ route('admin.users.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Thêm người dùng mới
-            </a>
         </div>
     </x-slot>
 
@@ -30,28 +32,28 @@
                         <table class="min-w-full table-auto">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tên</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vai trò</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày tạo</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                                    <th class="text-left py-3 px-4 text-gray-700 font-semibold">ID</th>
+                                    <th class="text-left py-3 px-4 text-gray-700 font-semibold">Tên</th>
+                                    <th class="text-left py-3 px-4 text-gray-700 font-semibold">Email</th>
+                                    <th class="text-left py-3 px-4 text-gray-700 font-semibold">Vai trò</th>
+                                    <th class="text-left py-3 px-4 text-gray-700 font-semibold">Ngày tạo</th>
+                                    <th class="text-left py-3 px-4 text-gray-700 font-semibold">Hành động</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach($users as $user)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->id }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $user->email }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                <tr class="hover:bg-gray-50 transition duration-200">
+                                    <td class="py-4 px-4 text-gray-900">{{ $user->id }}</td>
+                                    <td class="py-4 px-4 text-gray-900">{{ $user->name }}</td>
+                                    <td class="py-4 px-4 text-gray-900">{{ $user->email }}</td>
+                                    <td class="py-4 px-4">
                                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                             {{ $user->role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' }}">
                                             {{ $user->role === 'admin' ? 'Admin' : 'User' }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $user->created_at->format('d/m/Y') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <td class="py-4 px-4 text-gray-500">{{ $user->created_at->format('d/m/Y') }}</td>
+                                    <td class="py-4 px-4">
                                         <div class="flex flex-wrap gap-2">
                                             <a href="{{ route('admin.users.show', $user) }}" class="text-blue-600 hover:text-blue-900 text-xs bg-blue-100 px-2 py-1 rounded">Xem</a>
                                             <a href="{{ route('admin.users.watchlist', $user) }}" class="text-purple-600 hover:text-purple-900 text-xs bg-purple-100 px-2 py-1 rounded">Watchlist</a>
