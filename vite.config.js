@@ -12,4 +12,12 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        // Ensure proper asset handling for production
+        rollupOptions: {
+            output: {
+                manualChunks: undefined,
+            },
+        },
+    },
 });

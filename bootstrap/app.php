@@ -13,7 +13,13 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminMiddleware::class,
+            'force.https' => \App\Http\Middleware\ForceHttps::class,
         ]);
+        
+        // Apply HTTPS middleware globally for production
+        if (config('app.env') === 'production') {
+            $middleware->prepend(\App\Http\Middleware\ForceHttps::class);
+        }
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
