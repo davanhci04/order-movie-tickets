@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,12 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Force HTTPS in production and detect Railway deployment
-        if (config('app.env') === 'production' || 
-            str_contains(config('app.url', ''), 'railway.app') ||
-            request()->isSecure() ||
-            request()->header('x-forwarded-proto') === 'https') {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+        // Force HTTPS in production or Railway deployment
+        if ($this->app->environment('production') || str_contains(config('app.url', ''), 'railway.app')) {
+            URL::forceScheme('https');
         }
     }
 }
