@@ -57,7 +57,6 @@
                                         <div class="flex flex-wrap gap-2">
                                             <a href="{{ route('admin.users.show', $user) }}" class="text-blue-600 hover:text-blue-900 text-xs bg-blue-100 px-2 py-1 rounded">Xem</a>
                                             <a href="{{ route('admin.users.watchlist', $user) }}" class="text-purple-600 hover:text-purple-900 text-xs bg-purple-100 px-2 py-1 rounded">Watchlist</a>
-                                            <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 text-xs bg-indigo-100 px-2 py-1 rounded">Sửa</a>
                                             @if($user->id !== auth()->id())
                                             <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline" 
                                                   onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này?')">
